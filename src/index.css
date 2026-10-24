@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-heading: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-serif: 'Fraunces', Georgia, serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #faf9f5;
+    color: #1e261f;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Improve mobile touch responsiveness */
+  button, a, input, select, textarea {
+    touch-action: manipulation;
+  }
+}
+
+/* Custom agricultural styling */
+.font-serif-farm {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.farm-pattern {
+  background-color: #fbfbf7;
+  background-image: radial-gradient(#2d5a27 0.75px, transparent 0.75px), radial-gradient(#e5a93b 0.75px, #fbfbf7 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+  background-opacity: 0.04;
+}
+
+.wood-accent {
+  background: linear-gradient(135deg, #2a3a27 0%, #1e2a1c 100%);
+}
+
+.green-badge-glow {
+  box-shadow: 0 10px 25px -5px rgba(112, 163, 56, 0.35);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #f1efe7;
+}
+::-webkit-scrollbar-thumb {
+  background: #a8b89d;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #689f38;
+}
+
+/* Hide scrollbars for clean horizontal tab scrolling on mobile */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
