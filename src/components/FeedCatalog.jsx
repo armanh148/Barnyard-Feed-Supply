@@ -70,26 +70,94 @@ export default function FeedCatalog({
           </p>
         </div>
 
-        {/* Filterable Categories Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-          {FEED_CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => onSelectCategory(cat.id)}
-              className={`px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
-                activeCategory === cat.id
-                  ? 'bg-[#689f38] text-white shadow-md scale-105'
-                  : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
-              }`}
-            >
-              <span>{cat.name}</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                activeCategory === cat.id ? 'bg-white/25 text-white' : 'bg-stone-200 text-stone-600'
-              }`}>
-                {cat.count || (cat.id === 'all' ? PRODUCTS.length : PRODUCTS.filter(p => p.category === cat.id).length)}
+        {/* Master Catalog Filter Bar */}
+        <div className="mb-6">
+          {/* Filter Header & Reset Action */}
+          <div className="flex items-center justify-between mb-2.5 px-1 text-xs">
+            <div className="flex items-center gap-1.5 text-stone-700">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-[#689f38]" />
+              <span className="font-extrabold uppercase tracking-wider text-[11px] text-stone-600">
+                Category Filter:
               </span>
-            </button>
-          ))}
+            </div>
+
+            {activeCategory !== 'all' && (
+              <button 
+                onClick={() => onSelectCategory('all')}
+                className="text-[#689f38] hover:text-[#4d7f25] font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
+              >
+                <X className="w-3 h-3" />
+                <span>Show All (12)</span>
+              </button>
+            )}
+          </div>
+
+          {/* Segmented Filter Track (Swipeable on mobile, centered on desktop) */}
+          <div className="bg-stone-100/90 p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl border border-stone-200/90 shadow-inner flex items-center overflow-x-auto scrollbar-none snap-x gap-1.5 sm:gap-2 justify-start lg:justify-center">
+            {FEED_CATEGORIES.map((cat) => {
+              const isActive = activeCategory === cat.id;
+              const meta = categoryIconMap[cat.id] || { icon: Package, accent: 'text-stone-500' };
+              const IconComp = meta.icon;
+              const count = cat.count || (cat.id === 'all' ? PRODUCTS.length : PRODUCTS.filter(p => p.category === cat.id).length);
+
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => onSelectCategory(cat.id)}
+                  className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 snap-start cursor-pointer select-none active:scale-95 ${
+                    isActive
+                      ? 'bg-gradient-to-r from-[#689f38] to-[#558b2f] text-white shadow-md shadow-[#689f38]/30 scale-[1.02] ring-1 ring-white/40'
+                      : 'bg-white hover:bg-stone-50 text-stone-700 hover:text-stone-900 border border-stone-200/70 shadow-2xs hover:shadow-xs'
+                  }`}
+                >
+                  <IconComp className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${isActive ? 'text-white' : meta.accent}`} />
+                  <span className="whitespace-nowrap">{cat.name}</span>
+                  <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
+                    isActive ? 'bg-white/25 text-white' : 'bg-stone-100 text-stone-600'
+                  }`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Active Filter Status & Reset Strip */}
+          <div className="mt-2.5 flex flex-wrap items-center justify-between text-xs text-stone-500 px-1 gap-2">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span>Showing:</span>
+              <strong className="text-stone-800 font-bold">
+                {filteredProducts.length} Item{filteredProducts.length !== 1 ? 's' : ''}
+              </strong>
+              {activeCategory !== 'all' && (
+                <span className="bg-[#689f38]/12 text-[#3b671b] px-2 py-0.5 rounded-full font-bold text-[11px] border border-[#689f38]/30 inline-flex items-center gap-1">
+                  <span>Filtered: {FEED_CATEGORIES.find(c => c.id === activeCategory)?.name || activeCategory}</span>
+                  <button onClick={() => onSelectCategory('all')} className="hover:text-red-600 ml-0.5 cursor-pointer">
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+              {inStockOnly && (
+                <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold text-[11px]">
+                  In-Stock Only
+                </span>
+              )}
+            </div>
+
+            {(activeCategory !== 'all' || inStockOnly || searchQuery) && (
+              <button
+                onClick={() => {
+                  onSelectCategory('all');
+                  setInStockOnly(false);
+                  setSearchQuery('');
+                }}
+                className="text-stone-500 hover:text-red-600 flex items-center gap-1 transition-colors cursor-pointer text-[11px] font-bold"
+              >
+                <RefreshCw className="w-3 h-3" />
+                <span>Reset All</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Search & Utility Bar */}
