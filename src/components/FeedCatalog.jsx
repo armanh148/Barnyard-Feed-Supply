@@ -9,7 +9,14 @@ import {
   Filter,
   Package,
   Layers,
-  Sparkles
+  Sparkles,
+  Wheat,
+  Leaf,
+  Dog,
+  Boxes,
+  SlidersHorizontal,
+  RefreshCw,
+  X
 } from 'lucide-react';
 import { PRODUCTS, FEED_CATEGORIES } from '../data/storeData';
 
