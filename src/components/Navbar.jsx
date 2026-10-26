@@ -171,100 +171,154 @@ export default function Navbar({ cartItems, onOpenCart, onOpenInventory, onOpenC
         </div>
       </div>
 
-      {/* Mobile Drawer Menu & Overlay */}
+      {/* Mobile Off-Canvas Slide-Out Sidebar Drawer */}
       {mobileMenuOpen && (
-        <>
+        <div className="fixed inset-0 z-50 lg:hidden overflow-hidden">
+          {/* Dark Backdrop with fade */}
           <div 
             onClick={() => setMobileMenuOpen(false)}
-            className="fixed inset-0 top-[105px] bg-black/40 backdrop-blur-xs z-30 lg:hidden"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-300"
           />
-          <div className="relative z-40 lg:hidden bg-white border-b border-stone-200 px-4 pt-3 pb-6 space-y-3 shadow-xl max-h-[calc(100vh-105px)] overflow-y-auto">
-          <nav className="flex flex-col space-y-2.5 text-base font-semibold text-stone-800">
-            <a 
-              href="#" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded-lg bg-stone-50 text-[#2d5a27]"
-            >
-              Home
-            </a>
-            <a 
-              href="#about" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-stone-50"
-            >
-              About Barnyard Feed
-            </a>
-            <a 
-              href="#services" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-stone-50"
-            >
-              Core Services & Delivery
-            </a>
-            <a 
-              href="#catalog" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-stone-50"
-            >
-              Feed Catalog Grid
-            </a>
-            <button 
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenInventory();
-              }}
-              className="text-left w-full px-3 py-2 rounded-lg hover:bg-stone-50 text-[#2d5a27] font-bold flex items-center justify-between"
-            >
-              <span>Live Bag Inventory Tracker</span>
-              <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Live Count</span>
-            </button>
-            <button 
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenCalculator();
-              }}
-              className="text-left w-full px-3 py-2 rounded-lg hover:bg-stone-50 text-[#966b17] font-bold flex items-center justify-between"
-            >
-              <span>Recurring Ranch Order / POS</span>
-              <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">Save 5%</span>
-            </button>
-            <a 
-              href="#testimonials" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-stone-50"
-            >
-              Customer Reviews (4.7 ★)
-            </a>
-            <a 
-              href="#contact" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-stone-50"
-            >
-              Store Hours & Directions
-            </a>
-          </nav>
 
-          <div className="pt-3 border-t border-stone-200 flex flex-col gap-2">
-            <a 
-              href={`tel:${STORE_DETAILS.phone.replace(/[^0-9+]/g, '')}`}
-              className="w-full flex items-center justify-center gap-2 bg-[#689f38] text-white font-bold py-3 rounded-xl shadow text-center"
-            >
-              <Phone className="w-5 h-5" />
-              <span>Click to Call: {STORE_DETAILS.phoneFormatted}</span>
-            </a>
-            <a 
-              href={STORE_DETAILS.googleMapsUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="w-full flex items-center justify-center gap-2 bg-stone-100 text-stone-800 font-semibold py-2.5 rounded-xl border border-stone-300 text-center text-sm"
-            >
-              <MapPin className="w-4 h-4 text-[#e2a838]" />
-              <span>Directions: 847 N Pleasant Ave, Fresno</span>
-            </a>
+          {/* Right-Hand Slide-Out Sidebar Panel */}
+          <div className="fixed inset-y-0 right-0 w-full max-w-[320px] sm:max-w-[360px] bg-white shadow-2xl flex flex-col justify-between z-10 border-l border-stone-200 transform transition-transform duration-300 ease-out">
+            
+            {/* Sidebar Top Header */}
+            <div className="p-4 sm:p-5 border-b border-stone-200 flex items-center justify-between bg-stone-50">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-[#2d5a27] text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                  🌾
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-extrabold text-stone-900 text-sm tracking-tight">Barnyard</span>
+                    <span className="bg-[#689f38] text-white text-[9px] font-black px-1.5 py-0.5 rounded uppercase">Feed</span>
+                  </div>
+                  <p className="text-[10px] text-stone-500 font-medium truncate max-w-[170px]">847 N Pleasant Ave, Fresno</p>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 rounded-full hover:bg-stone-200 text-stone-500 hover:text-stone-800 transition-colors cursor-pointer"
+                aria-label="Close Navigation Sidebar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Sidebar Navigation Links (Scrollable) */}
+            <div className="flex-1 overflow-y-auto px-3.5 py-4 space-y-1">
+              <a 
+                href="#" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-sm text-[#2d5a27] bg-emerald-50/80 hover:bg-emerald-100/70 transition-colors"
+              >
+                <span>Home</span>
+                <ChevronRight className="w-4 h-4 text-[#689f38]" />
+              </a>
+
+              <a 
+                href="#about" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-semibold text-sm text-stone-700 hover:text-stone-900 hover:bg-stone-50 transition-colors"
+              >
+                <span>About Barnyard Feed</span>
+                <ChevronRight className="w-4 h-4 text-stone-300" />
+              </a>
+
+              <a 
+                href="#services" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-semibold text-sm text-stone-700 hover:text-stone-900 hover:bg-stone-50 transition-colors"
+              >
+                <span>Core Services &amp; Delivery</span>
+                <ChevronRight className="w-4 h-4 text-stone-300" />
+              </a>
+
+              <a 
+                href="#catalog" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-semibold text-sm text-stone-700 hover:text-stone-900 hover:bg-stone-50 transition-colors"
+              >
+                <span>Feed Catalog Grid</span>
+                <ChevronRight className="w-4 h-4 text-stone-300" />
+              </a>
+
+              <button 
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenInventory();
+                }}
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-sm text-[#2d5a27] hover:bg-emerald-50/60 transition-colors cursor-pointer text-left"
+              >
+                <span>Live Bag Inventory</span>
+                <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
+                  Live Count
+                </span>
+              </button>
+
+              <button 
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenCalculator();
+                }}
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-bold text-sm text-[#966b17] hover:bg-amber-50/60 transition-colors cursor-pointer text-left"
+              >
+                <span>Recurring Ranch Order</span>
+                <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">
+                  Save 5%
+                </span>
+              </button>
+
+              <a 
+                href="#testimonials" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-semibold text-sm text-stone-700 hover:text-stone-900 hover:bg-stone-50 transition-colors"
+              >
+                <span>Customer Reviews (4.7 ★)</span>
+                <ChevronRight className="w-4 h-4 text-stone-300" />
+              </a>
+
+              <a 
+                href="#contact" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-semibold text-sm text-stone-700 hover:text-stone-900 hover:bg-stone-50 transition-colors"
+              >
+                <span>Store Hours &amp; Directions</span>
+                <ChevronRight className="w-4 h-4 text-stone-300" />
+              </a>
+            </div>
+
+            {/* Sidebar Footer with Quick Actions */}
+            <div className="p-4 border-t border-stone-200 bg-stone-50 space-y-2.5">
+              <a 
+                href={`tel:${STORE_DETAILS.phone.replace(/[^0-9+]/g, '')}`}
+                className="w-full flex items-center justify-center gap-2 bg-[#689f38] hover:bg-[#5a8c2f] text-white font-extrabold py-3 rounded-xl shadow-md text-center text-xs uppercase tracking-wide transition-all active:scale-95"
+              >
+                <Phone className="w-4 h-4" />
+                <span>Call Store: {STORE_DETAILS.phoneFormatted}</span>
+              </a>
+
+              <a 
+                href={STORE_DETAILS.googleMapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full flex items-center justify-center gap-2 bg-white hover:bg-stone-100 text-stone-800 font-bold py-2.5 rounded-xl border border-stone-300 text-center text-xs transition-colors shadow-2xs active:scale-95"
+              >
+                <MapPin className="w-4 h-4 text-[#e2a838]" />
+                <span className="truncate">Directions: 847 N Pleasant Ave</span>
+              </a>
+
+              <div className="pt-1 flex items-center justify-between text-[10.5px] text-stone-500 font-medium px-1">
+                <span>🕒 Mon-Fri 8AM-6PM</span>
+                <span className="text-[#2d5a27] font-bold">★ 4.7 (101 Reviews)</span>
+              </div>
+            </div>
+
           </div>
         </div>
-      </>
-    )}
+      )}
     </header>
   );
 }

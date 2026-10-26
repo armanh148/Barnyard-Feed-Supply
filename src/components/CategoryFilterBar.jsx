@@ -111,7 +111,7 @@ export default function CategoryFilterBar({ activeCategory, onSelectCategory }) 
   const currentCategory = categories.find((c) => c.id === activeCategory) || categories[0];
 
   return (
-    <section className="py-16 sm:py-20 bg-gradient-to-b from-[#fbfaf6] via-[#f7f5ee] to-[#f2eee3] border-b border-stone-200 relative overflow-hidden">
+    <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-[#fbfaf6] via-[#f7f5ee] to-[#f2eee3] border-b border-stone-200 relative overflow-hidden">
       {/* Decorative ambient glows */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[750px] h-44 bg-[#689f38]/10 blur-3xl pointer-events-none rounded-full" />
       <div className="absolute bottom-0 right-10 w-80 h-40 bg-[#e5a93b]/10 blur-3xl pointer-events-none rounded-full" />
@@ -119,18 +119,18 @@ export default function CategoryFilterBar({ activeCategory, onSelectCategory }) 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Header Section */}
-        <div className="text-center space-y-3 mb-10 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#689f38]/12 border border-[#689f38]/30 text-[#497523] text-xs font-extrabold uppercase tracking-widest shadow-xs">
+        <div className="text-center space-y-2 sm:space-y-3 mb-8 sm:mb-10 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#689f38]/12 border border-[#689f38]/30 text-[#497523] text-[11px] sm:text-xs font-extrabold uppercase tracking-widest shadow-xs">
             <span className="w-2 h-2 rounded-full bg-[#689f38] animate-pulse"></span>
             Fresno County Ranch Categories
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#172316] tracking-tight">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#172316] tracking-tight leading-[1.18] sm:leading-tight">
             Quality Feeds, Hay &amp;{' '}
             <span className="relative inline-block text-[#689f38]">
               Ranch Supplies
               <svg 
-                className="absolute -bottom-1.5 left-0 w-full h-2 text-[#689f38]/40" 
+                className="absolute -bottom-1 left-0 w-full h-1.5 sm:h-2 text-[#689f38]/40" 
                 viewBox="0 0 100 8" 
                 preserveAspectRatio="none"
               >
@@ -140,14 +140,14 @@ export default function CategoryFilterBar({ activeCategory, onSelectCategory }) 
           </h2>
 
           <p className="text-stone-600 text-xs sm:text-sm md:text-base leading-relaxed pt-1">
-            Select an animal or supply category below to instantly view current bag counts, prices, and specs.
+            Select an animal or supply category below to view bag counts, prices, and specs.
           </p>
         </div>
 
         {/* Mastercrafted Dark Category Bar Container */}
-        <div className="bg-gradient-to-b from-[#182317] via-[#121b11] to-[#0c120a] rounded-3xl p-3 sm:p-4.5 shadow-[0_25px_60px_-15px_rgba(20,35,18,0.4)] border border-[#2c3d29] ring-1 ring-white/10">
+        <div className="bg-gradient-to-b from-[#182317] via-[#121b11] to-[#0c120a] rounded-2xl sm:rounded-3xl p-2.5 sm:p-4.5 shadow-[0_25px_60px_-15px_rgba(20,35,18,0.4)] border border-[#2c3d29] ring-1 ring-white/10">
           
-          {/* Responsive 6-column Grid */}
+          {/* Responsive Grid: 2 columns on mobile, 3 on tablet, 6 on desktop */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
             {categories.map((cat) => {
               const isActive = activeCategory === cat.id;
@@ -157,7 +157,7 @@ export default function CategoryFilterBar({ activeCategory, onSelectCategory }) 
                   key={cat.id}
                   onClick={() => handleCategoryClick(cat.id)}
                   type="button"
-                  className={`group relative flex flex-col items-center justify-between p-3.5 sm:p-4 rounded-2xl transition-all duration-300 text-center cursor-pointer select-none overflow-hidden ${
+                  className={`group relative flex flex-col items-center justify-between p-2.5 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-300 text-center cursor-pointer select-none overflow-hidden active:scale-95 ${
                     isActive 
                       ? 'bg-gradient-to-b from-[#4d7f25] via-[#416d1e] to-[#345718] text-white shadow-xl shadow-[#345718]/45 ring-1 ring-[#9ad068]/70 border border-[#8bc34a]/40 scale-[1.02] z-10' 
                       : 'bg-[#1b2519]/80 hover:bg-[#243222] text-stone-300 hover:text-white border border-white/6 hover:border-[#689f38]/50 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/40'
@@ -165,34 +165,34 @@ export default function CategoryFilterBar({ activeCategory, onSelectCategory }) 
                 >
                   {/* Subtle top indicator line on active card */}
                   {isActive && (
-                    <div className="absolute top-0 inset-x-3 h-[2px] bg-gradient-to-r from-transparent via-[#c6e872] to-transparent rounded-full" />
+                    <div className="absolute top-0 inset-x-2 sm:inset-x-3 h-[2px] bg-gradient-to-r from-transparent via-[#c6e872] to-transparent rounded-full" />
                   )}
 
                   {/* Icon Tile with bespoke illumination */}
                   <div 
-                    className={`w-12 h-12 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 mb-2.5 ${
+                    className={`w-10 h-10 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 mb-1.5 sm:mb-2.5 ${
                       isActive 
                         ? 'bg-white/15 text-white ring-1 ring-white/30 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)]' 
                         : 'bg-[#253222] group-hover:bg-[#2e3e2b] border border-white/6 shadow-inner'
                     }`}
                   >
-                    <IconComp className={`w-6 h-6 stroke-[2.2] transition-colors ${isActive ? 'text-white' : cat.accentColor}`} />
+                    <IconComp className={`w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2] transition-colors ${isActive ? 'text-white' : cat.accentColor}`} />
                   </div>
 
                   {/* Category Name */}
-                  <span className="text-xs sm:text-[13px] font-bold leading-snug min-h-[2.25rem] flex items-center justify-center text-center px-1">
+                  <span className="text-[11.5px] sm:text-[13px] font-bold leading-tight min-h-[2rem] sm:min-h-[2.25rem] flex items-center justify-center text-center px-0.5 sm:px-1">
                     {cat.name}
                   </span>
 
                   {/* Bottom Chip / Spec Tag */}
-                  <div className="mt-2.5 flex items-center gap-1">
+                  <div className="mt-1.5 sm:mt-2.5 flex items-center gap-1">
                     {isActive ? (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-black/25 text-[#dcf0a4] border border-white/15 shadow-inner">
-                        <Check className="w-3 h-3 stroke-[3]" />
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 rounded-full text-[9.5px] sm:text-[10.5px] font-bold bg-black/25 text-[#dcf0a4] border border-white/15 shadow-inner">
+                        <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 stroke-[3]" />
                         {cat.count}
                       </span>
                     ) : (
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10.5px] font-semibold bg-black/35 text-stone-400 group-hover:text-stone-200 border border-white/5 transition-colors">
+                      <span className="inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-[9.5px] sm:text-[10.5px] font-semibold bg-black/35 text-stone-400 group-hover:text-stone-200 border border-white/5 transition-colors">
                         {cat.count}
                       </span>
                     )}
@@ -202,30 +202,30 @@ export default function CategoryFilterBar({ activeCategory, onSelectCategory }) 
             })}
           </div>
 
-          {/* Master status & action bar */}
-          <div className="mt-4 pt-3.5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2.5 px-2 text-xs">
+          {/* Master status & action bar: Optimized for mobile single-tap */}
+          <div className="mt-3.5 pt-3 sm:mt-4 sm:pt-3.5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2.5 px-1 sm:px-2 text-xs">
             
             {/* Left status badge */}
-            <div className="flex items-center gap-2.5">
-              <span className="relative flex h-2.5 w-2.5">
+            <div className="flex items-center gap-2 text-center sm:text-left">
+              <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8bc34a] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#8bc34a]"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 bg-[#8bc34a]"></span>
               </span>
-              <span className="text-stone-400">
-                Active Category: <strong className="text-white font-bold">{currentCategory.name}</strong>
-                <span className="hidden sm:inline text-stone-400 ml-1.5">• {currentCategory.detail}</span>
+              <span className="text-[11px] sm:text-xs text-stone-400 truncate">
+                Filter: <strong className="text-white font-bold">{currentCategory.name}</strong>
+                <span className="hidden md:inline text-stone-400 ml-1.5">• {currentCategory.detail}</span>
               </span>
             </div>
 
-            {/* Right jump button */}
+            {/* Right jump button: Full-width on mobile */}
             <button
               onClick={() => {
                 const catalogEl = document.getElementById('catalog');
                 if (catalogEl) catalogEl.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs text-[#b8e986] hover:text-white font-bold transition-all border border-white/10 cursor-pointer group"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-3.5 py-2 sm:py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-[11px] sm:text-xs text-[#b8e986] hover:text-white font-bold transition-all border border-white/10 cursor-pointer active:scale-95 group"
             >
-              <span>Scroll down to live products &amp; pricing</span>
+              <span>Scroll to live products &amp; pricing</span>
               <ArrowDown className="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform" />
             </button>
 
