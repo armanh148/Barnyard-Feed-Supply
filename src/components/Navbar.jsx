@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   Phone, 
   MapPin, 
@@ -172,8 +173,8 @@ export default function Navbar({ cartItems, onOpenCart, onOpenInventory, onOpenC
       </div>
 
       {/* Mobile Off-Canvas Slide-Out Sidebar Drawer */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden overflow-hidden">
+      {mobileMenuOpen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[9999] lg:hidden overflow-hidden">
           {/* Dark Backdrop with fade */}
           <div 
             onClick={() => setMobileMenuOpen(false)}
@@ -181,10 +182,10 @@ export default function Navbar({ cartItems, onOpenCart, onOpenInventory, onOpenC
           />
 
           {/* Right-Hand Slide-Out Sidebar Panel */}
-          <div className="fixed inset-y-0 right-0 w-full max-w-[320px] sm:max-w-[360px] bg-white shadow-2xl flex flex-col justify-between z-10 border-l border-stone-200 transform transition-transform duration-300 ease-out">
+          <div className="fixed inset-y-0 right-0 w-full max-w-[320px] sm:max-w-[360px] h-full bg-white shadow-2xl flex flex-col justify-between z-10 border-l border-stone-200 transform transition-transform duration-300 ease-out">
             
             {/* Sidebar Top Header */}
-            <div className="p-4 sm:p-5 border-b border-stone-200 flex items-center justify-between bg-stone-50">
+            <div className="p-4 sm:p-5 border-b border-stone-200 flex items-center justify-between bg-stone-50 shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-xl bg-[#2d5a27] text-white flex items-center justify-center font-bold text-lg shadow-sm">
                   🌾
@@ -291,7 +292,7 @@ export default function Navbar({ cartItems, onOpenCart, onOpenInventory, onOpenC
             </div>
 
             {/* Sidebar Footer with Quick Actions */}
-            <div className="p-4 border-t border-stone-200 bg-stone-50 space-y-2.5">
+            <div className="p-4 border-t border-stone-200 bg-stone-50 space-y-2.5 shrink-0">
               <a 
                 href={`tel:${STORE_DETAILS.phone.replace(/[^0-9+]/g, '')}`}
                 className="w-full flex items-center justify-center gap-2 bg-[#689f38] hover:bg-[#5a8c2f] text-white font-extrabold py-3 rounded-xl shadow-md text-center text-xs uppercase tracking-wide transition-all active:scale-95"
@@ -317,7 +318,8 @@ export default function Navbar({ cartItems, onOpenCart, onOpenInventory, onOpenC
             </div>
 
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </header>
   );

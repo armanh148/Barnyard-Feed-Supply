@@ -15,7 +15,8 @@ import {
   CalendarCheck,
   Scale,
   Sparkles,
-  ShoppingBag
+  ShoppingBag,
+  ChevronDown
 } from 'lucide-react';
 import { PRODUCTS, STORE_DETAILS, FEED_CATEGORIES } from '../data/storeData';
 
@@ -25,6 +26,24 @@ export default function InventoryDashboardSection({ onAddToCart }) {
   const [stockStatusFilter, setStockStatusFilter] = useState('all');
   const [sizeFilter, setSizeFilter] = useState('all'); // all, 50lb, 25lb, other
   const [viewMode, setViewMode] = useState('matrix'); // 'matrix' (side-by-side standard sizes) or 'table' (warehouse master table)
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isSizeDropdownOpen, setIsSizeDropdownOpen] = useState(false);
+
+  const categoryOptions = [
+    { id: 'all', label: 'All Livestock Feeds & Supplies' },
+    { id: 'horse-livestock', label: 'Horse & Livestock Feed' },
+    { id: 'poultry', label: 'Poultry & Game Bird' },
+    { id: 'pet-small-animal', label: 'Pet & Small Animal' },
+    { id: 'hardware-supplements', label: 'Farm Hardware & Supplements' },
+    { id: 'hay-forage', label: 'Hay, Straw & Forage' }
+  ];
+
+  const sizeOptions = [
+    { id: 'all', label: 'All Bag Sizes & Packings' },
+    { id: '50lb', label: 'Standard 50 lb Bags' },
+    { id: '25lb', label: 'Standard 25 lb Bags' },
+    { id: 'other', label: 'Bales & Heavy Tubs' }
+  ];
   
   // Hold Bag Modal State
   const [selectedProductForHold, setSelectedProductForHold] = useState(null);
@@ -220,34 +239,102 @@ export default function InventoryDashboardSection({ onAddToCart }) {
               />
             </div>
 
-            {/* Category Dropdown */}
-            <div className="md:col-span-4">
-              <select 
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="w-full py-2.5 px-3 bg-stone-50 rounded-xl text-xs font-semibold text-stone-700 border border-stone-200 focus:outline-none focus:ring-2 focus:ring-[#689f38]"
+            {/* Custom Category Dropdown */}
+            <div className="md:col-span-4 relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
+                  setIsSizeDropdownOpen(false);
+                }}
+                className="w-full py-2.5 px-3 bg-stone-50 hover:bg-white rounded-xl text-xs font-semibold text-stone-700 border border-stone-200 hover:border-[#689f38] focus:outline-none flex items-center justify-between transition-all cursor-pointer select-none"
               >
-                <option value="all">All Livestock Feeds & Supplies</option>
-                <option value="horse-livestock">Horse & Livestock Feed</option>
-                <option value="poultry">Poultry & Game Bird</option>
-                <option value="pet-small-animal">Pet & Small Animal</option>
-                <option value="hardware-supplements">Farm Hardware & Supplements</option>
-                <option value="hay-forage">Hay, Straw & Forage</option>
-              </select>
+                <span className="truncate">
+                  {categoryOptions.find(c => c.id === categoryFilter)?.label || 'All Livestock Feeds & Supplies'}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-stone-400 shrink-0 transition-transform duration-200 ${isCategoryDropdownOpen ? 'rotate-180 text-[#689f38]' : ''}`} />
+              </button>
+
+              {isCategoryDropdownOpen && (
+                <>
+                  <div 
+                    onClick={() => setIsCategoryDropdownOpen(false)} 
+                    className="fixed inset-0 z-40" 
+                  />
+                  <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-2xl shadow-xl border border-stone-200 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150 max-h-64 overflow-y-auto">
+                    {categoryOptions.map((opt) => {
+                      const isSelected = categoryFilter === opt.id;
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => {
+                            setCategoryFilter(opt.id);
+                            setIsCategoryDropdownOpen(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-semibold transition-colors cursor-pointer text-left ${
+                            isSelected 
+                              ? 'bg-emerald-50 text-[#244c1f] font-bold' 
+                              : 'text-stone-700 hover:bg-stone-50 hover:text-stone-900'
+                          }`}
+                        >
+                          <span className="truncate">{opt.label}</span>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-[#689f38] stroke-[2.5] shrink-0 ml-1.5" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
             </div>
 
-            {/* Size Filter Dropdown */}
-            <div className="md:col-span-3">
-              <select 
-                value={sizeFilter}
-                onChange={(e) => setSizeFilter(e.target.value)}
-                className="w-full py-2.5 px-3 bg-stone-50 rounded-xl text-xs font-semibold text-stone-700 border border-stone-200 focus:outline-none focus:ring-2 focus:ring-[#689f38]"
+            {/* Custom Size Filter Dropdown */}
+            <div className="md:col-span-3 relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSizeDropdownOpen(!isSizeDropdownOpen);
+                  setIsCategoryDropdownOpen(false);
+                }}
+                className="w-full py-2.5 px-3 bg-stone-50 hover:bg-white rounded-xl text-xs font-semibold text-stone-700 border border-stone-200 hover:border-[#689f38] focus:outline-none flex items-center justify-between transition-all cursor-pointer select-none"
               >
-                <option value="all">All Bag Sizes & Packings</option>
-                <option value="50lb">Standard 50 lb Bags</option>
-                <option value="25lb">Standard 25 lb Bags</option>
-                <option value="other">Bales & Heavy Tubs</option>
-              </select>
+                <span className="truncate">
+                  {sizeOptions.find(s => s.id === sizeFilter)?.label || 'All Bag Sizes & Packings'}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-stone-400 shrink-0 transition-transform duration-200 ${isSizeDropdownOpen ? 'rotate-180 text-[#689f38]' : ''}`} />
+              </button>
+
+              {isSizeDropdownOpen && (
+                <>
+                  <div 
+                    onClick={() => setIsSizeDropdownOpen(false)} 
+                    className="fixed inset-0 z-40" 
+                  />
+                  <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-2xl shadow-xl border border-stone-200 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                    {sizeOptions.map((opt) => {
+                      const isSelected = sizeFilter === opt.id;
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => {
+                            setSizeFilter(opt.id);
+                            setIsSizeDropdownOpen(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-semibold transition-colors cursor-pointer text-left ${
+                            isSelected 
+                              ? 'bg-emerald-50 text-[#244c1f] font-bold' 
+                              : 'text-stone-700 hover:bg-stone-50 hover:text-stone-900'
+                          }`}
+                        >
+                          <span className="truncate">{opt.label}</span>
+                          {isSelected && <Check className="w-3.5 h-3.5 text-[#689f38] stroke-[2.5] shrink-0 ml-1.5" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
             </div>
 
           </div>

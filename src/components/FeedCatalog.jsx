@@ -16,9 +16,32 @@ import {
   Boxes,
   SlidersHorizontal,
   RefreshCw,
+  ChevronDown,
   X
 } from 'lucide-react';
 import { PRODUCTS, FEED_CATEGORIES } from '../data/storeData';
+
+// Custom precision SVG for Horse
+function HorseIcon({ className = "w-4 h-4" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 19c-1-3.5-3-6-6-7-.5-1.5-.5-3.5 0-5-2 0-3.5 1-4.5 2.5C7.5 6 5.5 8 4.5 11.5c-1 3-1 6 0 7.5l3-1c1 2 2.5 3 4.5 3 4 0 7.5-2 7-5Z" />
+      <path d="M5.5 14h3" />
+      <circle cx="9" cy="9.5" r="0.8" fill="currentColor" />
+    </svg>
+  );
+}
+
+// Custom precision SVG for Poultry
+function PoultryIcon({ className = "w-4 h-4" }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 11c0-4-3-7-7-7S2 7 2 11c0 2.5 1.2 4.8 3.2 6.1L4 21l4-2c.7.4 1.5.6 2.3.7C15 19.8 16 15.6 16 11Z" />
+      <circle cx="11" cy="7.5" r="0.8" fill="currentColor" />
+      <path d="M19 6l3 2-3 2" />
+    </svg>
+  );
+}
 
 export default function FeedCatalog({ 
   activeCategory, 
@@ -30,6 +53,27 @@ export default function FeedCatalog({
   const [searchQuery, setSearchQuery] = useState('');
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState('popular');
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isSortOpen, setIsSortOpen] = useState(false);
+
+  const sortOptions = [
+    { id: 'popular', label: 'Most Popular' },
+    { id: 'price-low', label: 'Price: Low to High' },
+    { id: 'price-high', label: 'Price: High to Low' },
+    { id: 'stock', label: 'Highest Stock Count' }
+  ];
+
+  const categoryIconMap = {
+    'all': { icon: Wheat, accent: 'text-amber-500' },
+    'horse-livestock': { icon: HorseIcon, accent: 'text-orange-500' },
+    'poultry': { icon: PoultryIcon, accent: 'text-rose-500' },
+    'hay-forage': { icon: Leaf, accent: 'text-emerald-500' },
+    'pet-small-animal': { icon: Dog, accent: 'text-amber-600' },
+    'hardware-supplements': { icon: Boxes, accent: 'text-cyan-600' }
+  };
+
+  const currentCategoryObj = FEED_CATEGORIES.find(c => c.id === activeCategory) || FEED_CATEGORIES[0];
+  const ActiveIcon = (categoryIconMap[activeCategory] || categoryIconMap['all']).icon;
 
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((product) => {
@@ -77,69 +121,192 @@ export default function FeedCatalog({
           </p>
         </div>
 
-        {/* Master Catalog Filter Bar */}
-        <div className="mb-6">
-          {/* Filter Header & Reset Action */}
-          <div className="flex items-center justify-between mb-2.5 px-1 text-xs">
-            <div className="flex items-center gap-1.5 text-stone-700">
-              <SlidersHorizontal className="w-3.5 h-3.5 text-[#689f38]" />
-              <span className="font-extrabold uppercase tracking-wider text-[11px] text-stone-600">
+        {/* Unified Search & Category Dropdown Filter Bar */}
+        <div className="bg-[#faf9f5] rounded-2xl sm:rounded-3xl p-4 sm:p-5 mb-10 border border-stone-200/90 shadow-sm relative z-30">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4">
+            
+            {/* 1. Category Dropdown Selector */}
+            <div className="relative w-full lg:w-80 shrink-0">
+              <label className="block text-[11px] font-black uppercase tracking-wider text-stone-500 mb-1 px-1">
                 Category Filter:
-              </span>
+              </label>
+              
+              <button
+                type="button"
+                onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                className="w-full flex items-center justify-between gap-2.5 px-3.5 py-2.5 bg-white rounded-xl border border-stone-300 hover:border-[#689f38] text-stone-800 text-xs sm:text-sm font-bold shadow-2xs hover:shadow-xs transition-all cursor-pointer select-none"
+              >
+                <div className="flex items-center gap-2.5 truncate">
+                  <span className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-100">
+                    <ActiveIcon className="w-3.5 h-3.5 text-[#689f38]" />
+                  </span>
+                  <span className="truncate">{currentCategoryObj?.name || 'All Feeds & Supplies'}</span>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="bg-[#689f38] text-white text-[10px] font-black px-2 py-0.5 rounded-full">
+                    {currentCategoryObj?.count || PRODUCTS.length}
+                  </span>
+                  <ChevronDown className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${isCategoryOpen ? 'rotate-180 text-[#689f38]' : ''}`} />
+                </div>
+              </button>
+
+              {/* Dropdown Menu Popover */}
+              {isCategoryOpen && (
+                <>
+                  <div 
+                    onClick={() => setIsCategoryOpen(false)} 
+                    className="fixed inset-0 z-40" 
+                  />
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-stone-200 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150 max-h-80 overflow-y-auto">
+                    <div className="px-3.5 py-1.5 text-[10px] font-bold text-stone-400 uppercase tracking-wider border-b border-stone-100 mb-1 flex items-center justify-between">
+                      <span>Select Category</span>
+                      <span>Total In Stock</span>
+                    </div>
+                    {FEED_CATEGORIES.map((cat) => {
+                      const isSelected = activeCategory === cat.id;
+                      const meta = categoryIconMap[cat.id] || { icon: Package, accent: 'text-stone-500' };
+                      const ItemIcon = meta.icon;
+                      const count = cat.count || (cat.id === 'all' ? PRODUCTS.length : PRODUCTS.filter(p => p.category === cat.id).length);
+
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => {
+                            onSelectCategory(cat.id);
+                            setIsCategoryOpen(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold transition-colors cursor-pointer text-left ${
+                            isSelected 
+                              ? 'bg-emerald-50/90 text-[#244c1f]' 
+                              : 'text-stone-700 hover:bg-stone-50 hover:text-stone-900'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 truncate">
+                            <span className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${
+                              isSelected ? 'bg-[#689f38] text-white' : 'bg-stone-100 text-stone-500'
+                            }`}>
+                              <ItemIcon className="w-3.5 h-3.5" />
+                            </span>
+                            <span className="truncate">{cat.name}</span>
+                          </div>
+
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                              isSelected ? 'bg-emerald-200/80 text-emerald-900' : 'bg-stone-100 text-stone-500'
+                            }`}>
+                              {count}
+                            </span>
+                            {isSelected && <Check className="w-3.5 h-3.5 text-[#689f38] stroke-[3]" />}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
             </div>
 
-            {activeCategory !== 'all' && (
-              <button 
-                onClick={() => onSelectCategory('all')}
-                className="text-[#689f38] hover:text-[#4d7f25] font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
-              >
-                <X className="w-3 h-3" />
-                <span>Show All (12)</span>
-              </button>
-            )}
-          </div>
+            {/* 2. Search Box */}
+            <div className="relative flex-1">
+              <label className="block text-[11px] font-black uppercase tracking-wider text-stone-500 mb-1 px-1">
+                Search Catalog:
+              </label>
+              <div className="relative">
+                <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input 
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search 50lb bags, sweet feed, pellets, hay..."
+                  className="w-full pl-9 pr-8 py-2.5 bg-white rounded-xl text-xs sm:text-sm font-medium border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#689f38] focus:border-transparent shadow-2xs"
+                />
+                {searchQuery && (
+                  <button 
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 p-0.5 cursor-pointer"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
 
-          {/* Segmented Filter Track (Swipeable on mobile, centered on desktop) */}
-          <div className="bg-stone-100/90 p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl border border-stone-200/90 shadow-inner flex items-center overflow-x-auto scrollbar-none snap-x gap-1.5 sm:gap-2 justify-start lg:justify-center">
-            {FEED_CATEGORIES.map((cat) => {
-              const isActive = activeCategory === cat.id;
-              const meta = categoryIconMap[cat.id] || { icon: Package, accent: 'text-stone-500' };
-              const IconComp = meta.icon;
-              const count = cat.count || (cat.id === 'all' ? PRODUCTS.length : PRODUCTS.filter(p => p.category === cat.id).length);
+            {/* 3. In-Stock Checkbox & Sort Dropdown */}
+            <div className="flex items-center gap-3 shrink-0 pt-1 lg:pt-5 justify-between lg:justify-end">
+              <label className="flex items-center gap-2 cursor-pointer select-none text-xs font-bold text-stone-700 bg-white px-3.5 py-2.5 rounded-xl border border-stone-300 hover:border-stone-400 shadow-2xs">
+                <input 
+                  type="checkbox"
+                  checked={inStockOnly}
+                  onChange={(e) => setInStockOnly(e.target.checked)}
+                  className="w-4 h-4 rounded text-[#689f38] focus:ring-[#689f38] border-stone-300 accent-[#689f38] cursor-pointer"
+                />
+                <span className="whitespace-nowrap">In-Stock Only</span>
+              </label>
 
-              return (
+              {/* Custom Sort Dropdown */}
+              <div className="relative">
                 <button
-                  key={cat.id}
-                  onClick={() => onSelectCategory(cat.id)}
-                  className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 snap-start cursor-pointer select-none active:scale-95 ${
-                    isActive
-                      ? 'bg-gradient-to-r from-[#689f38] to-[#558b2f] text-white shadow-md shadow-[#689f38]/30 scale-[1.02] ring-1 ring-white/40'
-                      : 'bg-white hover:bg-stone-50 text-stone-700 hover:text-stone-900 border border-stone-200/70 shadow-2xs hover:shadow-xs'
-                  }`}
+                  type="button"
+                  onClick={() => setIsSortOpen(!isSortOpen)}
+                  className="bg-white border border-stone-300 hover:border-[#689f38] rounded-xl px-3 py-2.5 text-xs text-stone-800 font-bold focus:outline-none shadow-2xs cursor-pointer flex items-center gap-2 select-none"
                 >
-                  <IconComp className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${isActive ? 'text-white' : meta.accent}`} />
-                  <span className="whitespace-nowrap">{cat.name}</span>
-                  <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
-                    isActive ? 'bg-white/25 text-white' : 'bg-stone-100 text-stone-600'
-                  }`}>
-                    {count}
-                  </span>
+                  <span className="text-stone-400 font-normal">Sort:</span>
+                  <span className="whitespace-nowrap">{sortOptions.find(s => s.id === sortBy)?.label || 'Most Popular'}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 text-stone-400 transition-transform duration-200 ${isSortOpen ? 'rotate-180 text-[#689f38]' : ''}`} />
                 </button>
-              );
-            })}
+
+                {isSortOpen && (
+                  <>
+                    <div 
+                      onClick={() => setIsSortOpen(false)} 
+                      className="fixed inset-0 z-40" 
+                    />
+                    <div className="absolute top-full right-0 mt-1.5 w-48 bg-white rounded-2xl shadow-xl border border-stone-200 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                      {sortOptions.map((opt) => {
+                        const isSelected = sortBy === opt.id;
+                        return (
+                          <button
+                            key={opt.id}
+                            type="button"
+                            onClick={() => {
+                              setSortBy(opt.id);
+                              setIsSortOpen(false);
+                            }}
+                            className={`w-full flex items-center justify-between px-3.5 py-2 text-xs font-semibold transition-colors cursor-pointer text-left ${
+                              isSelected 
+                                ? 'bg-emerald-50 text-[#244c1f] font-bold' 
+                                : 'text-stone-700 hover:bg-stone-50 hover:text-stone-900'
+                            }`}
+                          >
+                            <span>{opt.label}</span>
+                            {isSelected && <Check className="w-3.5 h-3.5 text-[#689f38] stroke-[2.5]" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
           </div>
 
-          {/* Active Filter Status & Reset Strip */}
-          <div className="mt-2.5 flex flex-wrap items-center justify-between text-xs text-stone-500 px-1 gap-2">
-            <div className="flex items-center gap-1.5 flex-wrap">
+          {/* Active Filter Strip & Reset Action */}
+          <div className="mt-3.5 pt-3 border-t border-stone-200/80 flex flex-wrap items-center justify-between text-xs text-stone-500 gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span>Showing:</span>
-              <strong className="text-stone-800 font-bold">
-                {filteredProducts.length} Item{filteredProducts.length !== 1 ? 's' : ''}
+              <strong className="text-stone-900 font-extrabold">
+                {filteredProducts.length} Product{filteredProducts.length !== 1 ? 's' : ''}
               </strong>
               {activeCategory !== 'all' && (
-                <span className="bg-[#689f38]/12 text-[#3b671b] px-2 py-0.5 rounded-full font-bold text-[11px] border border-[#689f38]/30 inline-flex items-center gap-1">
-                  <span>Filtered: {FEED_CATEGORIES.find(c => c.id === activeCategory)?.name || activeCategory}</span>
-                  <button onClick={() => onSelectCategory('all')} className="hover:text-red-600 ml-0.5 cursor-pointer">
+                <span className="bg-[#689f38]/12 text-[#3b671b] px-2.5 py-0.5 rounded-full font-bold text-[11px] border border-[#689f38]/30 inline-flex items-center gap-1.5">
+                  <span>Category: {currentCategoryObj?.name}</span>
+                  <button 
+                    onClick={() => onSelectCategory('all')} 
+                    className="hover:text-red-600 cursor-pointer"
+                    title="Clear category filter"
+                  >
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -147,6 +314,11 @@ export default function FeedCatalog({
               {inStockOnly && (
                 <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold text-[11px]">
                   In-Stock Only
+                </span>
+              )}
+              {searchQuery && (
+                <span className="bg-stone-200/80 text-stone-800 px-2 py-0.5 rounded-full font-semibold text-[11px]">
+                  Keyword: "{searchQuery}"
                 </span>
               )}
             </div>
@@ -158,54 +330,12 @@ export default function FeedCatalog({
                   setInStockOnly(false);
                   setSearchQuery('');
                 }}
-                className="text-stone-500 hover:text-red-600 flex items-center gap-1 transition-colors cursor-pointer text-[11px] font-bold"
+                className="text-stone-500 hover:text-red-600 flex items-center gap-1 transition-colors cursor-pointer text-xs font-bold"
               >
-                <RefreshCw className="w-3 h-3" />
-                <span>Reset All</span>
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Reset All Filters</span>
               </button>
             )}
-          </div>
-        </div>
-
-        {/* Search & Utility Bar */}
-        <div className="bg-[#faf9f5] rounded-2xl p-4 mb-10 border border-stone-200 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xs">
-          {/* Search Box */}
-          <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input 
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search feed name, brand, or animal..."
-              className="w-full pl-9 pr-4 py-2 bg-white rounded-xl text-xs font-medium border border-stone-300 focus:outline-none focus:ring-2 focus:ring-[#689f38] focus:border-transparent"
-            />
-          </div>
-
-          {/* Quick Filters */}
-          <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end text-xs font-semibold">
-            <label className="flex items-center gap-2 cursor-pointer select-none text-stone-700">
-              <input 
-                type="checkbox"
-                checked={inStockOnly}
-                onChange={(e) => setInStockOnly(e.target.checked)}
-                className="w-4 h-4 rounded text-[#689f38] focus:ring-[#689f38] border-stone-300 accent-[#689f38]"
-              />
-              <span>In-Stock Only</span>
-            </label>
-
-            <div className="flex items-center gap-2">
-              <span className="text-stone-500">Sort:</span>
-              <select 
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 text-xs text-stone-800 font-medium focus:outline-none focus:ring-1 focus:ring-[#689f38]"
-              >
-                <option value="popular">Most Popular</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="stock">Highest Stock Count</option>
-              </select>
-            </div>
           </div>
         </div>
 
